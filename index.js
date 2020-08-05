@@ -6,6 +6,10 @@ const categoriesController = require("./categories/CategoriesController");
 // Importa o Controller da article
 const articleController = require("./articles/ArticlesController");
 
+// Importa os models do artigo e categoria
+const Article = require("./articles/Article");
+const Category = require("./categories/Category");
+
 // Importa a conexão com banco de dados
 const connection = require("./database/database");
 
