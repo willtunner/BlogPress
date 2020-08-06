@@ -73,4 +73,32 @@ router.post("/categories/delete", (req, res) => {
     }
 });
 
+// Cria a rota para editar uma categoria
+router.get("/admin/categories/edit/:id", (req, res) => {
+    // Pega o id vindo na url
+    var id = req.params.id;
+
+    // Valida se o valor é somente numero
+    if(isNaN(id)){
+        res.redirect("/admin/categories");// Se não for ele redireciona
+    }
+
+    // findByPk: pesquisa pelo id
+    Category.findByPk(id).then(category => {
+        if(category != undefined){
+            // Chama a rota edit e passa os dados da category para ela
+            res.render("admin/categories/edit", { category: category});
+        }else{
+            // Redireciona a pagina
+            res.redirect("/admin/categories");
+        }
+    }).catch( erro => {
+        // Redireciona a pagina
+        res.redirect("/admin/categories");
+    })
+});
+
+// Cria a rota para dar o update no banco
+
+
 module.exports = router;
