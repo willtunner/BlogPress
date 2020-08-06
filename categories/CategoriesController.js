@@ -99,6 +99,19 @@ router.get("/admin/categories/edit/:id", (req, res) => {
 });
 
 // Cria a rota para dar o update no banco
+router.post("/categories/update", (req, res) => {
+    var id = req.body.id;// Pega o id da categoria
+    var title = req.body.title;// Pega o titulo alterado da categoria
 
+    // Faz um update na tabela categoria
+    // Atualiza tb o slug usando o slugify
+    Category.update({title: title, slug: slugify(title)},{// Diz que quer atualizar o campo title do banco e recebe a vareavel title
+        where: {
+            id: id // Quando o id do banco for igual o id retornado
+        }
+    }).then(() => {
+        res.redirect("/admin/categories");// Se não for ele redireciona
+    })
+})
 
 module.exports = router;
