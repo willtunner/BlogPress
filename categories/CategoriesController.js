@@ -1,6 +1,6 @@
 const express = require("express");// Importa o express
 const router = express.Router();// Importa o Router do express
-const Catregory = require("./Category");// Importa o model da categoria
+const Category = require("./Category");// Importa o model da categoria
 const slugify = require("slugify");
 
 /**
@@ -30,7 +30,7 @@ router.post("/categories/save", (req, res) => {
     // Se o titulo for diferente de nulo
     if(title != undefined){
 
-        Catregory.create({
+        Category.create({
             title: title,
             slug: slugify(title)
         }).then(() => {
@@ -38,6 +38,38 @@ router.post("/categories/save", (req, res) => {
         })
     }else{
         res.redirect("/admin/categories/new");
+    }
+});
+
+// Cria rota para listar as categorias cadastradas
+router.get("/admin/categories", (req, res) =>{
+    // findAll = select * from
+    Category.findAll().then(categories => {
+        // Passa para o html tudo que retorna do sql na vareavel categories
+        res.render("admin/categories/index", {categories: categories});
+    });
+});
+
+// Cria rota para excluir uma categoria
+router.post("/categories/delete", (req, res) => {
+    var id = req.body.id;
+
+    if(id != undefined){// Se o valor for diferente de nulo
+        if(!isNaN(id)){
+
+            Category.destroy({// EXCLUI CATEGORIA DA TABELA DB
+                where: {
+                    id: id // Quando o id for igual o id vindo do form
+                }
+            }).then(() => {
+                res.redirect("/admin/categories");// Se der certo redireciona para categorias
+            });
+
+        }else{// Se não for um número
+            res.redirect("/admin/categories");
+        }
+    }else{// Se for nulo/NULL
+        res.redirect("/admin/categories");
     }
 });
 
