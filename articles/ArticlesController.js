@@ -9,7 +9,7 @@ const slugfi = require("slugify");// Importa o slugfy
  */
 
  // Cria a rota de categoria
- router.get("/articles", (req, res) => {
+ router.get("/admin/articles", (req, res) => {
      res.send("ROTA DE ARTICLES")
  });
 
@@ -28,12 +28,12 @@ router.post("/articles/save", (req, res) =>{
     var category = req.body.category;
 
     Article.create({
-        tile: title,// titulo vindo do input 
+        title: title,// titulo vindo do input 
         slug: slugfi(title), // slug criado apartir do titulo
         body: body,// Corpo da mensagem vindo do textarea
         categoryId: category // Chave primaria da categoria criada no model do artigo Article.belongsTo(Category);
     }).then(() => {
-        res.redirect()
+        res.redirect("/admin/articles/");
     });
 })
 
