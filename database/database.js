@@ -4,7 +4,8 @@ const Sequelize = require("sequelize");
 // Cria a conexão com o banco 
 const connection = new Sequelize('guiapress', 'root', '', {
     host: 'localhost',
-    dialect: 'mysql'
+    dialect: 'mysql',
+    timezone: '-03:00'
 });
 
 // Exporta para ser chamado em outras telas
