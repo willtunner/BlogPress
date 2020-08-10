@@ -10,6 +10,7 @@ const articleController = require("./articles/ArticlesController");
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
 
+
 // Importa a conexão com banco de dados
 const connection = require("./database/database");
 
@@ -38,8 +39,10 @@ app.use(bodyParser.json());// Aceita dados em Json
 
 // Cria a rota principal com uma msg
 app.get("/", (req, res) =>{
-    // Renderiza o HTML index.ejs dentro da pasta views
-    res.render("index");
+   Article.findAll().then(articles => {
+     // Renderiza o HTML index.ejs dentro da pasta views
+     res.render("index", {articles: articles});
+   });
 });
 
 // Para usar as rotas da categoria criada em outro arquivo

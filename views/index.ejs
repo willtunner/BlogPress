@@ -1,5 +1,31 @@
 <%- include ("./partials/header.ejs") %>
+<%- include ("./partials/homenavbar.ejs") %>
+
 <body>
-    <h1>Testanto as Views</h1>
+    <div class="container">
+        <hr>
+        <div class="jumbotron shadow-lg mb-5 p-3  rounded" style="background-color: #8527A7; color: seashell;" >
+            <h1 class="display-4">Bem vindo!</h1>
+            <p class="lead">Meu nome é William Pereira e seja bem vindo ao meu portifólio.</p>
+            <hr class="my-4">
+            <p>Aqui vão conhecer meus projetos, trabalhos, minha carreira e ainda aprender sobre esse mundo maravilhoso da programação.</p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            </p>
+          </div>
+
+        <!-- O nome "articles" é o mesmo que foi dito na linha 42 do index.js -->
+        <% articles.forEach(article => { %>
+            <div class="card">
+                <div class="card-header">
+                    <h2><%= article.title %></h2>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="btn btn-success">Ler artigo</a>
+                </div>
+            </div>
+            <br>
+        <% }) %>
+    </div>
 </body>
 <%- include ("./partials/footer.ejs") %>
