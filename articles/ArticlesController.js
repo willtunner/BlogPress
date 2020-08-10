@@ -8,9 +8,13 @@ const slugfi = require("slugify");// Importa o slugfy
  * CRIA AS ROTAS PARA A PARTE DE CATEGORIAS
  */
 
- // Cria a rota de categoria
+ // Cria a rota de Artigos
  router.get("/admin/articles", (req, res) => {
-     res.send("ROTA DE ARTICLES")
+     Article.findAll({
+         include: [{model: Category}]
+     }).then(articles => {
+        res.render("admin/articles/index",{articles: articles} );
+     });
  });
 
  // Cria a rota para criar uma nova categoria
@@ -36,5 +40,28 @@ router.post("/articles/save", (req, res) =>{
         res.redirect("/admin/articles/");
     });
 })
+
+// Cria rota para excluir um artigo
+router.post("/articles/delete", (req, res) => {
+    var id = req.body.id;
+
+    if(id != undefined){// Se o valor for diferente de nulo
+        if(!isNaN(id)){
+
+            Article.destroy({// EXCLUI CATEGORIA DA TABELA DB
+                where: {
+                    id: id // Quando o id for igual o id vindo do form
+                }
+            }).then(() => {
+                res.redirect("/admin/articles");// Se der certo redireciona para categorias
+            });
+
+        }else{// Se não for um número
+            res.redirect("/admin/articles");
+        }
+    }else{// Se for nulo/NULL
+        res.redirect("/admin/articles");
+    }
+});
 
 module.exports = router;

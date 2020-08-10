@@ -1,0 +1,51 @@
+<%- include ("../../partials/header.ejs") %>
+<%- include ("../../partials/navbar.ejs") %>
+<div class="container">
+    <hr>
+    <h2>Artigos</h2>
+    <a href="/admin/articles/new" class="btn btn-success">Criar novo artigo</a>
+    <hr>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Titulo</th>
+                <th>Slug</th>
+                <th>Category</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <% articles.forEach(article => { %>
+                <td><%= article.id %></td>
+                <td><%= article.title %></td>
+                <td><%= article.slug %></td>
+                <td><%= article.category.title %></td>
+                <td>
+                    <form action="/articles/delete" method="POST" style="display: inline;"
+                        onsubmit="confirmarDelecao(event, this)">
+                        <input type="hidden" name="id" value="<%= article.id %>">
+                        <button class="btn btn-danger">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+<%- include ("../../partials/footer.ejs") %>
+
+<script>
+    function confirmarDelecao(event, form) {
+        event.preventDefault();// Impede que o formulário seja submetido.
+        //console.log("O formulário não foi enviado!");
+        var decision = confirm("Você quer deletar este artigo");
+        if (decision) {
+            //console.log("Eu escolhi deletar!");
+            form.submit();
+        } else {
+            console.log("Não quero deletar, foi um acidente!")
+        }
+    }
+</script>
