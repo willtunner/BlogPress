@@ -37,9 +37,13 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: false}));// Aceita dados do formulario
 app.use(bodyParser.json());// Aceita dados em Json
 
-// Cria a rota principal com uma msg
+// Cria a rota principal do HOME
 app.get("/", (req, res) =>{
-   Article.findAll().then(articles => {
+   Article.findAll({
+       order:[
+           ['id','DESC']//  Ordenando os artigos por id mais recente
+       ]
+   }).then(articles => {
      // Renderiza o HTML index.ejs dentro da pasta views
      res.render("index", {articles: articles});
    });
@@ -51,7 +55,25 @@ app.use("/", categoriesController);
 // Para usar as rotas da article criada em outro arquivo
 app.use("/", articleController);
 
-
+// Rota para abrir o artigo via slug
+app.get("/:slug", (req,res) => {
+    var slug = req.params.slug;
+    
+    // Pesquisa um artigo no banco quando o slug passado for igual a um slug do banco
+    Article.findOne({
+        where: {
+            slug: slug // quando o slug for igual o slug
+        }
+    }).then(article => {// se der certo 
+        if(article != undefined){ // Verifica se o artigo é diferente de indefinido 
+            res.render("article", {article: article});
+        }else{
+            res.redirect("/");
+        }
+    }).catch( err =>{ // Se der erro
+        res.redirect("/");
+    });
+})
 
 // Define a porta que o servidor vai rodar
 app.listen(4000, () =>{
