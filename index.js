@@ -44,8 +44,10 @@ app.get("/", (req, res) =>{
            ['id','DESC']//  Ordenando os artigos por id mais recente
        ]
    }).then(articles => {
-     // Renderiza o HTML index.ejs dentro da pasta views
-     res.render("index", {articles: articles});
+     Category.findAll().then(categories =>{// Pega as categorias no banco
+        // Passa as categorias para a view junto com os artigos
+        res.render("index", {articles: articles, categories: categories});
+     })
    });
 });
 
@@ -66,13 +68,39 @@ app.get("/:slug", (req,res) => {
         }
     }).then(article => {// se der certo 
         if(article != undefined){ // Verifica se o artigo é diferente de indefinido 
-            res.render("article", {article: article});
+            Category.findAll().then(categories =>{// Pega as categorias no banco
+                // Passa as categorias para a view junto com os artigos
+                res.render("article", {article: article, categories: categories});
+             })
         }else{
             res.redirect("/");
         }
     }).catch( err =>{ // Se der erro
         res.redirect("/");
     });
+})
+
+// Cria uma rota para listar os artigos por categoria
+app.get("/category/:slug", (req, res) => {
+    var slug = req.params.slug;
+    Category.findOne({ // Pesquisa por uma categoria no banco
+        where: {
+            slug: slug // Quando o slug do banco for igual o slug postado
+        },
+        include: [{model: Article}]// Fazendo o JOIN do artigo na busca de categoria
+    }).then( category => { // Caso retorne algo
+        if(category != undefined){// Verifica se a categoria existe
+            // lista as categorias para mostrar no navbar
+            Category.findAll().then(categories => {
+                // Passa para a view os artigos daquela categoria
+                res.render("index",{articles: category.articles, categories: categories});
+            });
+        }else{
+            res.redirect("/");// caso não retorne nada volta para page inicial
+        }
+    }).catch(err => { // Caso de erro retorne para principal
+        res.redirect("/");
+    })
 })
 
 // Define a porta que o servidor vai rodar

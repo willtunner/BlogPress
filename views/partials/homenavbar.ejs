@@ -1,6 +1,14 @@
-<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a href="/" class="navbar-brand">BlogPress</a>
     <ul class="navbar-nav mr-auto">
-        
+        <li class="nav-item">
+            <a href="/" class="navlink" style="color: seashell; margin-right: 10px; ">Home</a>
+        </li>
+        <!-- Cria o forEach para o menu dinamico -->
+        <% categories.forEach(category => { %>
+            <li class="nav-item">
+                <a href="/category/<%= category.slug %>" class="navlink" style="color: seashell; margin-right: 10px; "><%= category.title %></a>
+            </li>
+        <% }) %>
     </ul>
 </nav>
