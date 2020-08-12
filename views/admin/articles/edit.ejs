@@ -8,8 +8,10 @@
             <h2>Editar artigo</h2>
         </div>
         <div class="card-body">
-            <form method="POST" action="/articles/save">
-                <input type="text" class="form-control" name="title" placeholder="Defina o titulo do artigo"><br>
+            <form method="POST" action="/articles/update">
+                <input type="hidden" value="<%= article.id %>" name="id">
+
+                <input type="text" class="form-control" name="title" placeholder="Defina o titulo do artigo" value="<%= article.title %>"><br>
                 <textarea name="body" id="article" class="form-control"
                     placeholder="Escreva seu artigo aqui!"></textarea>
                 <br>

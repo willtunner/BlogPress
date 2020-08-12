@@ -3,6 +3,7 @@ const router = express.Router();// Importa o Router do express
 const Category = require("../categories/Category"); // Importa as categorias para ter acesso quando for criar artigo
 const Article = require("./Article");// Importa o model do artigo
 const slugfi = require("slugify");// Importa o slugfy
+const { default: slugify } = require("slugify");
 
 /**
  * CRIA AS ROTAS PARA A PARTE DE CATEGORIAS
@@ -64,7 +65,7 @@ router.post("/articles/delete", (req, res) => {
     }
 });
 
-//Cria rota para editar um artigo
+// Cria rota para chamar a tela de edição passando os dados necessários
 router.get("/admin/articles/edit/:id", (req, res) => {
     var id = req.params.id;
 
@@ -76,6 +77,26 @@ router.get("/admin/articles/edit/:id", (req, res) => {
         }else{
             res.redirect("/");
         }
+    }).catch(err => {
+        res.redirect("/");
+    });
+});
+
+// Cria rota para savar os dados editados no banco
+router.post("/articles/update", (req, res) => {
+    // pega as vareaveis pelo nome dos campos na view
+    var id = req.body.id;
+    var title = req.body.title;
+    var body = req.body.body;
+    var category = req.body.category;
+
+    // Faz update na tabela artigo passando os dados a serem editado
+    Article.update({title: title, body: body, categoryId: category, slug: slugify(title)}, {
+        where: {
+            id: id // Quando o id for igual o id passado
+        }
+    }).then(() => {
+        res.redirect("/admin/articles");
     }).catch(err => {
         res.redirect("/");
     });
