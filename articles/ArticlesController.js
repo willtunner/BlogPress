@@ -139,8 +139,14 @@ router.get("/articles/page/:num", (req, res) => {
             articles: articles
         }
 
-        res.json(result); // Retorna a resposta em formato json
-    })
+        // Tem que passar a categoria para popular o navbar dinamico
+        // passa os artigos dentro de result
+        Category.findAll().then(categories => {
+            res.render("admin/articles/page", {result: result, categories: categories})
+        });
+
+        //res.json(result); // Retorna a resposta em formato json
+    });
 })
 
 module.exports = router;

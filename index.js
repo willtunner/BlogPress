@@ -42,7 +42,8 @@ app.get("/", (req, res) =>{
    Article.findAll({
        order:[
            ['id','DESC']//  Ordenando os artigos por id mais recente
-       ]
+       ],
+       limit: 4
    }).then(articles => {
      Category.findAll().then(categories =>{// Pega as categorias no banco
         // Passa as categorias para a view junto com os artigos
