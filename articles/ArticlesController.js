@@ -70,11 +70,11 @@ router.get("/admin/articles/edit/:id", (req, res) => {
     var id = req.params.id;
 
     Article.findByPk(id).then(article => {
-        if(article != undefined){
+        if (article != undefined) {
             Category.findAll().then(categories => {
-                res.render("admin/articles/edit", {categories: categories, article: article})
+                res.render("admin/articles/edit", { categories: categories, article: article })
             });
-        }else{
+        } else {
             res.redirect("/");
         }
     }).catch(err => {
@@ -91,7 +91,7 @@ router.post("/articles/update", (req, res) => {
     var category = req.body.category;
 
     // Faz update na tabela artigo passando os dados a serem editado
-    Article.update({title: title, body: body, categoryId: category, slug: slugify(title)}, {
+    Article.update({ title: title, body: body, categoryId: category, slug: slugify(title) }, {
         where: {
             id: id // Quando o id for igual o id passado
         }
@@ -102,5 +102,45 @@ router.post("/articles/update", (req, res) => {
     });
 });
 
+
+// Faz a parte da paginação
+router.get("/articles/page/:num", (req, res) => {
+    var page = req.params.num;// Vem no formato string
+    var offset = 0;// Apartir de qual numero ele vai começar
+
+    if (isNaN(page) || page == 1) {
+        offset = 0;// Começa com zero para puxar os 4 primeiros
+    } else {
+        // offset vai ser igual o valor passado na rota
+        // multiplicado por 4 que é o numero de elementos que tem na página
+        offset = parseInt(page) * 4; //parseInt converte de string para numerico
+    }
+
+    // findAndCountAll: dar um select com um count
+    Article.findAndCountAll({
+        limit: 4, // Da um limite de 4 artigos
+        offset: offset // Retorna 4 artigos apartir do décimo
+    }).then(articles => {
+
+        // Verifica se existe uma outra página depois da pagina atual
+        var next;
+        // Pega o ofsser e soma com a quantidade de elementos de uma págona
+        // For maior do que a contagem de artigos
+        if (offset + 4 >= articles.count) {// Count: consegue por conta do findAndCountAll
+            next = false;// se ultrapassar a quantidade de artigos
+        } else {
+            next = true;
+        }
+
+        // Vareavel que recebe os artigos 
+        var result = {
+            offset: offset,
+            next: next,
+            articles: articles
+        }
+
+        res.json(result); // Retorna a resposta em formato json
+    })
+})
 
 module.exports = router;
