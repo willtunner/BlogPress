@@ -7,6 +7,8 @@ const categoriesController = require("./categories/CategoriesController");
 const articleController = require("./articles/ArticlesController");
 // Importa o UsersController 
 const usersController = require("./user/UsersController");
+// Importa a parte de sessões/cookies
+const session = require("express-session");
 
 // Importa os models do artigo e categoria
 const Article = require("./articles/Article");
@@ -25,6 +27,14 @@ connection
         console.log(error);
     });
 
+
+// Sessions
+app.use(session({
+    // secret: palavra usada para criar criptografia dando mais segurança
+    // cookie: Diz que esse usuario tem sessão no servidor
+    // maxAge: tempo para expirar
+    secret: "greencode", cookie: {maxAge: 30000}
+}))    
 
 // Importa o body-parser
 const bodyParser = require("body-parser");
