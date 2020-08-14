@@ -113,11 +113,14 @@ router.get("/articles/page/:num", (req, res) => {
     } else {
         // offset vai ser igual o valor passado na rota
         // multiplicado por 4 que é o numero de elementos que tem na página
-        offset = parseInt(page) * 4; //parseInt converte de string para numerico
+        offset = (parseInt(page) -1) * 4; //parseInt converte de string para numerico
     }
 
     // findAndCountAll: dar um select com um count
     Article.findAndCountAll({
+        order:[
+            ['id','DESC']//  Ordenando os artigos por id mais recente
+        ],
         limit: 4, // Da um limite de 4 artigos
         offset: offset // Retorna 4 artigos apartir do décimo
     }).then(articles => {
@@ -134,7 +137,8 @@ router.get("/articles/page/:num", (req, res) => {
 
         // Vareavel que recebe os artigos 
         var result = {
-            offset: offset,
+            //offset: offset,
+            page: parseInt(page),// Pega a pagina atual
             next: next,
             articles: articles
         }
@@ -143,9 +147,9 @@ router.get("/articles/page/:num", (req, res) => {
         // passa os artigos dentro de result
         Category.findAll().then(categories => {
             res.render("admin/articles/page", {result: result, categories: categories})
+            //res.json(result); // Retorna a resposta em formato json
         });
 
-        //res.json(result); // Retorna a resposta em formato json
     });
 })
 

@@ -6,16 +6,38 @@
         <hr>
         <!-- O nome "articles" é o mesmo que foi dito na linha 42 do index.js -->
         <% result.articles.rows.forEach(article => { %>
-            <div class="card">
-                <div class="card-header">
-                    <h2><%= article.title %></h2>
-                </div>
-                <div class="card-body">
-                    <a href="/<%= article.slug %>" class="btn btn-success">Ler artigo</a>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <h2><%= article.title %></h2>
             </div>
-            <br>
+            <div class="card-body">
+                <a href="/<%= article.slug %>" class="btn btn-success">Ler artigo</a>
+            </div>
+        </div>
+        <br>
         <% }) %>
+
+        <!-- CRIA PAGINAÇÃO -->
+        <div class="row">
+            <div class="col col-12">
+                <!-- Verifica se a page é maior que 2 volta 1 pagina, se não volta para home -->
+                <% if(result.page > 2){ %>
+                    <!-- Se exite uma página anterior a ser exibida exibe link -->
+                    <a style="float: left;" href="/articles/page/<%= result.page -1 %>"><<< Prev</a>
+                <% } else if (result.page == 2){ %>
+                    <a style="float: left;" href="/"><<< Prev</a>
+                <%}%>    
+
+                <!-- Se exite uma próxima página a ser exibida exibe link -->
+                <% if(result.next) { %>
+                    <!-- <%= result.page +1 %> pega a pagina atual + 1 para ir para próxima página -->
+                    <a style="float: right;" href="/articles/page/<%= result.page +1 %>">Next >>></a>
+                <% } %>
+            </div>
+            <hr>
+        </div>
+        <hr>
+
     </div>
 </body>
 <%- include ("../../partials/footer.ejs") %>
