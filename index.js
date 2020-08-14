@@ -5,6 +5,8 @@ const app = express();
 const categoriesController = require("./categories/CategoriesController");
 // Importa o Controller da article
 const articleController = require("./articles/ArticlesController");
+// Importa o UsersController 
+const usersController = require("./user/UsersController");
 
 // Importa os models do artigo e categoria
 const Article = require("./articles/Article");
@@ -16,12 +18,12 @@ const connection = require("./database/database");
 
 // Chama a conexão do banco no projeto
 connection
-        .authenticate()
-        .then(() => {// Caso de certo mostra msg
-            console.log("Conexão feita com sucesso!");
-        }).catch((error) => {// Caso de erro mostra o erro
-            console.log(error);
-        });
+    .authenticate()
+    .then(() => {// Caso de certo mostra msg
+        console.log("Conexão feita com sucesso!");
+    }).catch((error) => {// Caso de erro mostra o erro
+        console.log(error);
+    });
 
 
 // Importa o body-parser
@@ -34,49 +36,51 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 // Configura o bodyparser
-app.use(bodyParser.urlencoded({extended: false}));// Aceita dados do formulario
+app.use(bodyParser.urlencoded({ extended: false }));// Aceita dados do formulario
 app.use(bodyParser.json());// Aceita dados em Json
 
 // Cria a rota principal do HOME
-app.get("/", (req, res) =>{
-   Article.findAll({
-       order:[
-           ['id','DESC']//  Ordenando os artigos por id mais recente
-       ],
-       limit: 4
-   }).then(articles => {
-     Category.findAll().then(categories =>{// Pega as categorias no banco
-        // Passa as categorias para a view junto com os artigos
-        res.render("index", {articles: articles, categories: categories});
-     })
-   });
+app.get("/", (req, res) => {
+    Article.findAll({
+        order: [
+            ['id', 'DESC']//  Ordenando os artigos por id mais recente
+        ],
+        limit: 4
+    }).then(articles => {
+        Category.findAll().then(categories => {// Pega as categorias no banco
+            // Passa as categorias para a view junto com os artigos
+            res.render("index", { articles: articles, categories: categories });
+        })
+    });
 });
 
 // Para usar as rotas da categoria criada em outro arquivo
 app.use("/", categoriesController);
-
 // Para usar as rotas da article criada em outro arquivo
 app.use("/", articleController);
+// Para usar as rotas do users criada em outro arquivo
+app.use("/", usersController);
+
 
 // Rota para abrir o artigo via slug
-app.get("/:slug", (req,res) => {
+app.get("/:slug", (req, res) => {
     var slug = req.params.slug;
-    
+
     // Pesquisa um artigo no banco quando o slug passado for igual a um slug do banco
     Article.findOne({
         where: {
             slug: slug // quando o slug for igual o slug
         }
     }).then(article => {// se der certo 
-        if(article != undefined){ // Verifica se o artigo é diferente de indefinido 
-            Category.findAll().then(categories =>{// Pega as categorias no banco
+        if (article != undefined) { // Verifica se o artigo é diferente de indefinido 
+            Category.findAll().then(categories => {// Pega as categorias no banco
                 // Passa as categorias para a view junto com os artigos
-                res.render("article", {article: article, categories: categories});
-             })
-        }else{
+                res.render("article", { article: article, categories: categories });
+            })
+        } else {
             res.redirect("/");
         }
-    }).catch( err =>{ // Se der erro
+    }).catch(err => { // Se der erro
         res.redirect("/");
     });
 })
@@ -88,15 +92,15 @@ app.get("/category/:slug", (req, res) => {
         where: {
             slug: slug // Quando o slug do banco for igual o slug postado
         },
-        include: [{model: Article}]// Fazendo o JOIN do artigo na busca de categoria
-    }).then( category => { // Caso retorne algo
-        if(category != undefined){// Verifica se a categoria existe
+        include: [{ model: Article }]// Fazendo o JOIN do artigo na busca de categoria
+    }).then(category => { // Caso retorne algo
+        if (category != undefined) {// Verifica se a categoria existe
             // lista as categorias para mostrar no navbar
             Category.findAll().then(categories => {
                 // Passa para a view os artigos daquela categoria
-                res.render("index",{articles: category.articles, categories: categories});
+                res.render("index", { articles: category.articles, categories: categories });
             });
-        }else{
+        } else {
             res.redirect("/");// caso não retorne nada volta para page inicial
         }
     }).catch(err => { // Caso de erro retorne para principal
@@ -105,6 +109,6 @@ app.get("/category/:slug", (req, res) => {
 })
 
 // Define a porta que o servidor vai rodar
-app.listen(4000, () =>{
+app.listen(4000, () => {
     console.log("O servidor está rodando");
 });
