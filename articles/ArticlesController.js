@@ -4,14 +4,18 @@ const Category = require("../categories/Category"); // Importa as categorias par
 const Article = require("./Article");// Importa o model do artigo
 const slugfi = require("slugify");// Importa o slugfy
 const { default: slugify } = require("slugify");
+const adminAuth = require("../middlewares/adminAuth");// Importa os middlewares
 
 /**
  * CRIA AS ROTAS PARA A PARTE DE CATEGORIAS
  */
 
 // Cria a rota de Artigos
-router.get("/admin/articles", (req, res) => {
+router.get("/admin/articles", adminAuth, (req, res) => {
     Article.findAll({
+        order: [
+            ['id', 'DESC']//  Ordenando os artigos por id mais recente
+        ],
         include: [{ model: Category }]
     }).then(articles => {
         res.render("admin/articles/index", { articles: articles });
@@ -19,7 +23,7 @@ router.get("/admin/articles", (req, res) => {
 });
 
 // Cria a rota para criar uma novo artigo
-router.get("/admin/articles/new", (req, res) => {
+router.get("/admin/articles/new",adminAuth, (req, res) => {
     // Pesquisa pelo findAll todas as categorias 
     Category.findAll().then(categories => {
         res.render("admin/articles/new", { categories: categories });
@@ -27,7 +31,7 @@ router.get("/admin/articles/new", (req, res) => {
 });
 
 // Cria a rota para salvar o artigo
-router.post("/articles/save", (req, res) => {
+router.post("/articles/save", adminAuth, (req, res) => {
     var title = req.body.title;
     var body = req.body.body;
     var category = req.body.category;
@@ -43,7 +47,7 @@ router.post("/articles/save", (req, res) => {
 })
 
 // Cria rota para excluir um artigo
-router.post("/articles/delete", (req, res) => {
+router.post("/articles/delete", adminAuth, (req, res) => {
     var id = req.body.id;
 
     if (id != undefined) {// Se o valor for diferente de nulo
@@ -66,7 +70,7 @@ router.post("/articles/delete", (req, res) => {
 });
 
 // Cria rota para chamar a tela de edição passando os dados necessários
-router.get("/admin/articles/edit/:id", (req, res) => {
+router.get("/admin/articles/edit/:id" , adminAuth, (req, res) => {
     var id = req.params.id;
 
     Article.findByPk(id).then(article => {
@@ -83,7 +87,7 @@ router.get("/admin/articles/edit/:id", (req, res) => {
 });
 
 // Cria rota para savar os dados editados no banco
-router.post("/articles/update", (req, res) => {
+router.post("/articles/update" , adminAuth, (req, res) => {
     // pega as vareaveis pelo nome dos campos na view
     var id = req.body.id;
     var title = req.body.title;

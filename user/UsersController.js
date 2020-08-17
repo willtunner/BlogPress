@@ -52,6 +52,43 @@ router.post("/users/create", (req, res) => {
     //res.json({email, password});
 });
 
+// Renderiza a tela de login
+router.get("/login", (req, res) => {
+    res.render("admin/users/login");
+});
+
+// Rota para fazer o login
+router.post("/authenticate", (req, res) => {
+    var email = req.body.email;
+    var password = req.body.password;
+
+    // Pesquisa se existe um usuario com esse email no banco
+    User.findOne({where:{email: email}}).then(user => {
+
+        if(user != undefined){// Se existe um usuario com esse email
+            //Verifica se a senha que o usuario passou é igual a cadastrada no banco
+            var correct = bcrypt.compareSync(password, user.password);
+
+            // Se a senha estiver correta
+            if(correct){
+                req.session.user = {
+                    id: user.id,
+                    email: user.email
+                }
+                //res.json(req.session.user);
+                res.redirect("/admin/articles")
+            }else{
+                res.redirect("/login");
+            }
+
+        }else{
+            res.redirect("/login");// Se não redireciona
+        }
+    });
+
+
+})
+
 
 
 module.exports = router;

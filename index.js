@@ -10,6 +10,7 @@ const usersController = require("./user/UsersController");
 // Importa a parte de sessões/cookies
 const session = require("express-session");
 
+
 // Importa os models do artigo e categoria
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
@@ -34,7 +35,35 @@ app.use(session({
     // cookie: Diz que esse usuario tem sessão no servidor
     // maxAge: tempo para expirar
     secret: "greencode", cookie: {maxAge: 30000}
-}))    
+}));
+
+// Pega esses dados e salva na sessão
+// Toda a aplicação tem acesso
+app.get("/session", (req, res) => {
+    req.session.treinamento = "Formação nodeJs"
+    req.session.ano = 2020
+    req.session.email = "williampereira21@gmail.com"
+    req.session.user = {
+        username: "William",
+        email: "greencode@gmail.com",
+        id: 10
+    }
+    res.send("Sessão gerada!");// Toda rota obrigatório da uma resposta
+});
+
+// Sessão que pega os dados dos cookies gerados na sessão
+app.get("/leitura", (req, res) => {
+    res.json({
+        treinamento: req.session.treinamento,
+        ano: req.session.ano,
+        email: req.session.email,
+        user: req.session.user
+    })
+});
+
+
+
+
 
 // Importa o body-parser
 const bodyParser = require("body-parser");

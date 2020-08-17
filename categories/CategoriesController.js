@@ -2,18 +2,19 @@ const express = require("express");// Importa o express
 const router = express.Router();// Importa o Router do express
 const Category = require("./Category");// Importa o model da categoria
 const slugify = require("slugify");
+const adminAuth = require("../middlewares/adminAuth");// Importa os middlewares
 
 /**
  * CRIA AS ROTAS PARA A PARTE DE CATEGORIAS
  */
 
  // Cria a rota de categoria
- router.get("/categories", (req, res) => {
+ router.get("/categories", adminAuth, (req, res) => {
      res.send("ROTA DE CATEGORIAS")
  });
 
  // Cria a rota para criar uma nova categoria
- router.get("/admin/categories/new", (req, res) => {
+ router.get("/admin/categories/new", adminAuth, (req, res) => {
     // Escreve algo na pagina criada
     //res.send("ROTA PARA CRIAR UMA NOVA CATEGORIA")
 
@@ -22,7 +23,7 @@ const slugify = require("slugify");
 });
 
 // Recomentado sempre usar post para formularios
-router.post("/categories/save", (req, res) => {
+router.post("/categories/save", adminAuth, (req, res) => {
 
     // pega o titulo da categoria do formulario pelo body-parser
     var title = req.body.title;
@@ -42,7 +43,7 @@ router.post("/categories/save", (req, res) => {
 });
 
 // Cria rota para listar as categorias cadastradas
-router.get("/admin/categories", (req, res) =>{
+router.get("/admin/categories", adminAuth, (req, res) =>{
     // findAll = select * from
     Category.findAll().then(categories => {
         // Passa para o html tudo que retorna do sql na vareavel categories
@@ -51,7 +52,7 @@ router.get("/admin/categories", (req, res) =>{
 });
 
 // Cria rota para excluir uma categoria
-router.post("/categories/delete", (req, res) => {
+router.post("/categories/delete", adminAuth, (req, res) => {
     var id = req.body.id;
 
     if(id != undefined){// Se o valor for diferente de nulo
@@ -74,7 +75,7 @@ router.post("/categories/delete", (req, res) => {
 });
 
 // Cria a rota para editar uma categoria
-router.get("/admin/categories/edit/:id", (req, res) => {
+router.get("/admin/categories/edit/:id", adminAuth, (req, res) => {
     // Pega o id vindo na url
     var id = req.params.id;
 
@@ -99,7 +100,7 @@ router.get("/admin/categories/edit/:id", (req, res) => {
 });
 
 // Cria a rota para dar o update no banco
-router.post("/categories/update", (req, res) => {
+router.post("/categories/update", adminAuth, (req, res) => {
     var id = req.body.id;// Pega o id da categoria
     var title = req.body.title;// Pega o titulo alterado da categoria
 
