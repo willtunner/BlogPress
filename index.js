@@ -147,7 +147,7 @@ app.get("/category/:slug", (req, res) => {
     })
 })
 
-// Define a porta que o servidor vai rodar
-app.listen(4000, () => {
+// Define a porta que o servidor vai rodar: 4000 | umbler 3000
+app.listen(3000, () => {
     console.log("O servidor está rodando");
 });
