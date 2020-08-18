@@ -89,6 +89,11 @@ router.post("/authenticate", (req, res) => {
 
 })
 
+// Rota para fazer o logout
+router.post("/logout", (req, res) =>{
+    req.session.user = undefined;
+    res.redirect("/");
+});
 
 
 module.exports = router;
