@@ -90,10 +90,11 @@ router.post("/authenticate", (req, res) => {
 })
 
 // Rota para fazer o logout
-router.post("/logout", (req, res) =>{
+router.get("/logout", (req, res) => {
+    // passa para sessão 
     req.session.user = undefined;
-    res.redirect("/");
-});
+})
+
 
 
 module.exports = router;
